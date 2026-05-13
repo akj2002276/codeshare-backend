@@ -102,11 +102,18 @@ const batchRoutes = require("./routes/batchRoutes");
 const topicRoutes = require("./routes/topicRoutes");
 const fileRoutes = require("./routes/fileRoutes");
 
+// NEW COMPILER ROUTE
+const compilerRoutes = require("./routes/compilerRoutes");
+
+
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
 app.use("/api/batches", batchRoutes);
 app.use("/api/topics", topicRoutes);
 app.use("/api/files", fileRoutes);
+
+// NEW COMPILER API
+app.use("/api/compiler", compilerRoutes);
 
 
 // TEST ROUTE
