@@ -27,10 +27,23 @@ const io = new Server(server, {
 // ONLINE USERS
 let onlineUsers = [];
 
+// LIVE CODE STATE
+let liveCodeState = {
+  code: `console.log("Welcome to CodeShareX Live Code");`,
+  language: "javascript",
+  input: "",
+  output: "",
+  isLive: false,
+};
+
 // SOCKET CONNECTION
 io.on("connection", (socket) => {
   console.log("User Connected:", socket.id);
 
+  // SEND CURRENT LIVE CODE TO NEW USER
+  socket.emit("live-code-state", liveCodeState);
+
+  // USER ONLINE
   socket.on("user-online", (userId) => {
     if (!userId) return;
 
@@ -53,6 +66,62 @@ io.on("connection", (socket) => {
     );
   });
 
+  // TRAINER START LIVE
+  socket.on("live-start", () => {
+    liveCodeState.isLive = true;
+
+    io.emit("live-code-state", liveCodeState);
+  });
+
+  // TRAINER STOP LIVE
+  socket.on("live-stop", () => {
+    liveCodeState.isLive = false;
+
+    io.emit("live-code-state", liveCodeState);
+  });
+
+  // TRAINER CODE CHANGE
+  socket.on("live-code-change", (code) => {
+    liveCodeState.code = code;
+
+    socket.broadcast.emit("live-code-update", code);
+  });
+
+  // TRAINER LANGUAGE CHANGE
+  socket.on("live-language-change", (language) => {
+    liveCodeState.language = language;
+
+    io.emit("live-language-update", language);
+  });
+
+  // TRAINER INPUT CHANGE
+  socket.on("live-input-change", (input) => {
+    liveCodeState.input = input;
+
+    socket.broadcast.emit("live-input-update", input);
+  });
+
+  // TRAINER OUTPUT CHANGE
+  socket.on("live-output-change", (output) => {
+    liveCodeState.output = output;
+
+    io.emit("live-output-update", output);
+  });
+
+  // RESET LIVE CODE
+  socket.on("live-reset", () => {
+    liveCodeState = {
+      code: `console.log("Welcome to CodeShareX Live Code");`,
+      language: "javascript",
+      input: "",
+      output: "",
+      isLive: false,
+    };
+
+    io.emit("live-code-state", liveCodeState);
+  });
+
+  // DISCONNECT
   socket.on("disconnect", () => {
     console.log("User Disconnected:", socket.id);
 
