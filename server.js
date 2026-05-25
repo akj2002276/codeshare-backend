@@ -106,6 +106,23 @@ io.on("connection", (socket) => {
     io.emit("live-code-state", liveCodeState);
   });
 
+  // COMMUNITY SOCKET EVENTS
+  socket.on("community-join", (user) => {
+    io.emit("community-member-joined", user);
+  });
+
+  socket.on("community-message-send", (message) => {
+    io.emit("community-new-message", message);
+  });
+
+  socket.on("community-user-blocked", (data) => {
+    io.emit("community-user-blocked-update", data);
+  });
+
+  socket.on("community-user-unblocked", (data) => {
+    io.emit("community-user-unblocked-update", data);
+  });
+
   socket.on("disconnect", () => {
     console.log("User Disconnected:", socket.id);
 
@@ -133,6 +150,7 @@ const fileRoutes = require("./routes/fileRoutes");
 const compilerRoutes = require("./routes/compilerRoutes");
 const contestRoutes = require("./routes/contestRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
+const communityRoutes = require("./routes/communityRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
@@ -142,6 +160,7 @@ app.use("/api/files", fileRoutes);
 app.use("/api/compiler", compilerRoutes);
 app.use("/api/contests", contestRoutes);
 app.use("/api/tickets", ticketRoutes);
+app.use("/api/community", communityRoutes);
 
 // TEST ROUTE
 app.get("/", (req, res) => {
