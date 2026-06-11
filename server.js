@@ -151,6 +151,8 @@ const compilerRoutes = require("./routes/compilerRoutes");
 const contestRoutes = require("./routes/contestRoutes");
 const ticketRoutes = require("./routes/ticketRoutes");
 const communityRoutes = require("./routes/communityRoutes");
+const profileRoutes = require("./routes/profileRoutes");
+const leaderboardRoutes = require("./routes/leaderboardRoutes");
 
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoutes);
@@ -161,7 +163,8 @@ app.use("/api/compiler", compilerRoutes);
 app.use("/api/contests", contestRoutes);
 app.use("/api/tickets", ticketRoutes);
 app.use("/api/community", communityRoutes);
-
+app.use("/api/profile", profileRoutes);
+app.use("/api/leaderboard", leaderboardRoutes);
 // TEST ROUTE
 app.get("/", (req, res) => {
   res.send("Backend Running");
