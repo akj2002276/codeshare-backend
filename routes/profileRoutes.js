@@ -4,14 +4,20 @@ const protect = require("../middleware/authMiddleware");
 const trainerOnly = require("../middleware/roleMiddleware");
 
 const {
-  getLeaderboard,
-  syncAllLeaderboard,
-} = require("../controllers/leaderboardController");
+  getMyProfile,
+  saveMyProfile,
+  getAllProfiles,
+  syncMyLeetCodeStats,
+} = require("../controllers/profileController");
 
 const router = express.Router();
 
-router.get("/", protect, getLeaderboard);
+router.get("/me", protect, getMyProfile);
 
-router.post("/sync-all", protect, trainerOnly, syncAllLeaderboard);
+router.post("/me", protect, saveMyProfile);
+
+router.post("/sync-leetcode", protect, syncMyLeetCodeStats);
+
+router.get("/", protect, trainerOnly, getAllProfiles);
 
 module.exports = router;
