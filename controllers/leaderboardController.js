@@ -1,4 +1,5 @@
 const StudentProfile = require("../models/StudentProfile");
+const LeaderboardMeta = require("../models/LeaderboardMeta");
 
 const {
   fetchLeetCodeStats,
@@ -24,7 +25,12 @@ const getLeaderboard = async (req, res) => {
       ...profile.toObject(),
     }));
 
-    res.status(200).json(rankedLeaderboard);
+    const meta = await LeaderboardMeta.findOne();
+
+    res.status(200).json({
+      leaderboard: rankedLeaderboard,
+      lastUpdatedAt: meta?.lastUpdatedAt || null,
+    });
   } catch (error) {
     res.status(500).json({
       message: error.message,
@@ -93,12 +99,24 @@ const syncAllLeaderboard = async (req, res) => {
       }
     }
 
+    const meta = await LeaderboardMeta.findOneAndUpdate(
+      {},
+      {
+        lastUpdatedAt: new Date(),
+      },
+      {
+        upsert: true,
+        new: true,
+      }
+    );
+
     res.status(200).json({
       message: "Leaderboard sync completed",
       totalProfiles: profiles.length,
       updated,
       failed,
       failedProfiles,
+      lastUpdatedAt: meta.lastUpdatedAt,
     });
   } catch (error) {
     res.status(500).json({
